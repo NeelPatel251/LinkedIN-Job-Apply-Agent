@@ -47,14 +47,15 @@ async def apply_jobs_with_integrated_gemini(navigator, elements_info, job_list_u
     form_agent = FormFillAgent(navigator, gemini_model_2)
 
 
-    USER_PROFILE_PATH = User_Profile_path
-    if not os.path.exists(USER_PROFILE_PATH):
-        print("👤 No user profile found. Let's create one...")
-        collect_user_profile()
-    else:
-        flag = input("🛠️ User profile exists. Do you want to update it? (Yes/No): ").strip().lower()
-        if flag in ["yes", "y"]:
-            collect_user_profile()
+    # USER_PROFILE_PATH = User_Profile_path
+    # if not os.path.exists(USER_PROFILE_PATH):
+    #     print("👤 No user profile found. Let's create one...")
+    #     collect_user_profile()
+    # else:
+    #     flag = input("🛠️ User profile exists. Do you want to update it? (Yes/No): ").strip().lower()
+    #     if flag in ["yes", "y"]:
+    #         collect_user_profile()
+    
     user_profile = load_user_profile()
     print("✅ User profile loaded.")
 
@@ -117,6 +118,7 @@ async def apply_jobs_with_integrated_gemini(navigator, elements_info, job_list_u
             questions = form_agent.last_extracted_questions
             
             # Initialize and run the simplified form filler
+
             form_filler = FormFillSubAgent(navigator, gemini_model_2, RESUME_PATH, user_profile)
             answers, analysis_result = await form_filler.answer_and_fill(questions)
 

@@ -2,7 +2,8 @@
   "notice_period": "60 days",
   "current_ctc": "480000",
   "expected_ctc": "800000",
-  "preferred_location": "Anywhere",
+  "preferred_location": "anywhere",
   "work_authorization": "Yes",
-  "relocation_willingness": "Yes"
+  "relocation_willingness": "Yes",
+  "resume_uploaded": true
 }
