@@ -14,5 +14,13 @@
       "48": "icon.png",
       "128": "icon.png"
     }
+  },
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Alt+Y"
+      },
+      "description": "Open the AI Job Agent Sidebar"
+    }
   }
 }
