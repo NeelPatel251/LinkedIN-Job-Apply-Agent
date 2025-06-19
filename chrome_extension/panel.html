@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Start AI Job Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            width: 420px;
+            min-height: 600px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .container {
+            background: white;
+            margin: 0;
+            border-radius: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0077b5 0%, #00a0dc 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 75%, rgba(255,255,255,0.1) 75%);
+            background-size: 20px 20px;
+            opacity: 0.1;
+        }
+
+        .header h2 {
+            font-size: 22px;
+            font-weight: 600;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+            font-weight: 300;
+        }
+
+        .form-container {
+            padding: 25px 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #555;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #0077b5;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 119, 181, 0.1);
+            transform: translateY(-1px);
+        }
+
+        input::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #0077b5 0%, #00a0dc 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 119, 181, 0.3);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .log-container {
+            margin: 0 20px 20px 20px;
+        }
+
+        .log-header {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 12px 16px;
+            border-radius: 8px 8px 0 0;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .log-header::before {
+            content: '📋';
+            font-size: 16px;
+        }
+
+        #logOutput {
+            background: #1a202c;
+            color: #68d391;
+            height: 220px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            padding: 16px;
+            border-radius: 0 0 8px 8px;
+            border: none;
+            line-height: 1.4;
+            scrollbar-width: thin;
+            scrollbar-color: #4a5568 #2d3748;
+        }
+
+        #logOutput::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #logOutput::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+
+        #logOutput::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 3px;
+        }
+
+        #logOutput::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #68d391;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        /* Loading animation for button */
+        .submit-btn.loading {
+            background: #94a3b8;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>AI Job Agent</h2>
+            <div class="subtitle">Automate your LinkedIn job applications</div>
+        </div>
+
+        <div class="form-container">
+            <form id="profileForm">
+                <div class="form-group">
+                    <label for="notice_period">Notice Period</label>
+                    <input type="text" name="notice_period" id="notice_period" placeholder="e.g., 30 days, Immediate" required />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="current_ctc">Current CTC</label>
+                        <input type="text" name="current_ctc" id="current_ctc" placeholder="e.g., 8 LPA" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="expected_ctc">Expected CTC</label>
+                        <input type="text" name="expected_ctc" id="expected_ctc" placeholder="e.g., 12 LPA" required />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="preferred_location">Preferred Location</label>
+                    <input type="text" name="preferred_location" id="preferred_location" placeholder="e.g., Bangalore, Remote" required />
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="work_authorization">Work Authorization</label>
+                        <input type="text" name="work_authorization" id="work_authorization" placeholder="Yes/No" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="relocation_willingness">Willing to Relocate</label>
+                        <input type="text" name="relocation_willingness" id="relocation_willingness" placeholder="Yes/No" required />
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" data-mode="start">Start Agent</button>
+                <button type="button" id="continueAgentBtn" class="submit-btn" style="margin-top: 12px;">
+                    Continue Agent
+                </button>
+            </form>
+        </div>
+
+        <div class="log-container">
+            <div class="log-header">
+                <span class="status-indicator"></span>
+                Agent Activity Log
+            </div>
+            <pre id="logOutput">Ready to start job hunting! Fill in your profile and click "Start Agent"...</pre>
+        </div>
+    </div>
+
+    <script src="panel.js"></script>
+</body>
+</html>

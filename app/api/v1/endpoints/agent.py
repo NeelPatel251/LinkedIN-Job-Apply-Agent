@@ -6,6 +6,7 @@ from sse_starlette.sse import EventSourceResponse
 import asyncio
 import json
 import sys
+from core.config import Temp_Path
 
 router = APIRouter()
 print_buffer = []
@@ -26,6 +27,13 @@ class PrintInterceptor:
         pass
 
 # sys.stdout = PrintInterceptor()
+
+@router.post("/continue-agent")
+async def continue_agent():
+    # Create the signal file
+    with open(Temp_Path, "w") as f:
+        f.write("RESUME")
+    return {"status": "ok", "message": "Resume signal received"}
 
 # ──────────────── ▶️ Run Agent ────────────────
 @router.get("/start-agent")

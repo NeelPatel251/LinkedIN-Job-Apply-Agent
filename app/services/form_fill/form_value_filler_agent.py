@@ -6,6 +6,7 @@ from services.form_fill.form_fill_agent import FormFillAgent
 from services.form_fill.form_fill_sub_agent import FormFillSubAgent
 from utlis.user_profile import load_user_profile
 import os
+from utlis.waiter import wait_for_user_resume
 from core.config import User_Profile_path
 
 class FormValueFillerAgent:
@@ -43,7 +44,8 @@ class FormValueFillerAgent:
         if resume_fields and not resume_uploaded:
             print("\n📄 Detected resume upload field(s).")
             print("Please upload your resume manually in the browser.")
-            input("⏸️ Press Enter after you've uploaded the resume to continue...")
+            # input("⏸️ Press Enter after you've uploaded the resume to continue...")
+            await wait_for_user_resume("resume upload")
 
             # ✅ Mark resume as uploaded in user_profile
             user_profile["resume_uploaded"] = True
@@ -76,7 +78,8 @@ class FormValueFillerAgent:
 
             print("\n🛑 AUTOMATION PAUSED")
             print("Please manually fill the remaining fields in the browser.")
-            input("▶️ Press Enter to resume automation after manual input...")
+            # input("▶️ Press Enter to resume automation after manual input...")
+            await wait_for_user_resume("resume upload")
 
         return True, []
 

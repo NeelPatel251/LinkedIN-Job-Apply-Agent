@@ -26,7 +26,7 @@ async def ask_llm_for_action_with_tools(navigator_instance, elements_info, goal,
         return await navigator_instance.execute_fallback_action(elements_info, current_step)
 
     try:
-        if current_step.startswith("login") or current_step.startswith("fill") or current_step == "submit_login":
+        if current_step == "initial":
             return await ask_login_agent(navigator_instance, elements_info, goal, current_step)
         elif current_step == "homepage":
             url = TARGET_JOB_URL
@@ -47,6 +47,7 @@ async def ask_login_agent(navigator, elements_info, goal, step):
         navigator, elements_info, goal, step,
         agent_role="LoginAgent",
         extra_instruction="""
+        First CLick Sign IN Button to navigate to Login Page and then follow next steps
         1. Fill email input field first.
         2. Then fill password.
         3. Finally, click the "Sign in" button.

@@ -6,6 +6,7 @@ from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage, SystemMessage
 from typing import Dict, Any, List, Optional
 from core.config import TARGET_URL, GEMINI_API_KEY, JOB_LOCATION, JOB_TITLE
+from utlis.waiter import wait_for_user_resume
 
 from utlis.url_builder import format_linkedin_job_url
 TARGET_JOB_URL = format_linkedin_job_url(TARGET_URL, JOB_TITLE, JOB_LOCATION)
@@ -242,7 +243,8 @@ class LinkedInJobsNavigator:
         print("SECURITY VERIFICATION DETECTED")
         print("="*80)
         
-        input("\nPress ENTER after completing verification manually...")
+        # input("\nPress ENTER after completing verification manually...")
+        await wait_for_user_resume("resume upload")
         
         print("\nContinuing automation...")
         self.human_intervention_needed = False

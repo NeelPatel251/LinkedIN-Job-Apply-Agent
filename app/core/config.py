@@ -21,3 +21,4 @@ RESUME_PATH = "/home/neel/Desktop/Job Apply Agent/resume college 1.pdf"
 # --- Base URLs ---
 TARGET_URL = "https://www.linkedin.com"
 User_Profile_path = "/home/neel/Desktop/Job Apply Agent/user_profile.json"
+Temp_Path = "/home/neel/Desktop/Job Apply Agent/app/continue_signal.txt"
