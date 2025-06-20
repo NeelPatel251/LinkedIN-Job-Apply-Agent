@@ -26,7 +26,8 @@ class PrintInterceptor:
     def flush(self):
         pass
 
-# sys.stdout = PrintInterceptor()
+sys.stdout = PrintInterceptor()
+sys.stderr = PrintInterceptor()
 
 @router.post("/continue-agent")
 async def continue_agent():

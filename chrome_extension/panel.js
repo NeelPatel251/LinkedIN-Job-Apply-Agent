@@ -16,10 +16,9 @@ document.getElementById("continueAgentBtn").addEventListener("click", async () =
     try {
         const response = await fetch("http://localhost:5000/agent/continue-agent", { method: "POST" });
         const result = await response.json();
-        logBox.textContent += `[${new Date().toLocaleTimeString()}] ✅ ${result.message}\n`;
-        // document.getElementById("continueAgentBtn").style.display = "none";
+        logBox.textContent += `[${new Date().toLocaleTimeString()}] ${result.message}\n`;
     } catch (err) {
-        logBox.textContent += `[${new Date().toLocaleTimeString()}] ❌ Failed to send continue signal: ${err.message}\n`;
+        logBox.textContent += `[${new Date().toLocaleTimeString()}] Failed to send continue signal: ${err.message}\n`;
     }
 
     logBox.scrollTop = logBox.scrollHeight;
@@ -77,11 +76,11 @@ async function restoreLogState() {
             const submitBtn = document.querySelector('.submit-btn');
 
             if (result.isAgentRunning && Date.now() - result.lastUpdated < 5 * 60 * 1000) {
-                submitBtn.textContent = '🔗 Reconnect to Agent';
+                submitBtn.textContent = 'Reconnect to Agent';
                 submitBtn.dataset.mode = 'reconnect';
                 document.getElementById("continueAgentBtn").style.display = "block";
             } else {
-                submitBtn.textContent = '🚀 Start Agent';
+                submitBtn.textContent = 'Start Agent';
                 submitBtn.dataset.mode = 'start';
             }
         }
@@ -113,7 +112,7 @@ function reconnectToAgent() {
     submitBtn.dataset.mode = 'reconnecting';
 
     activeEventSource.onopen = async () => {
-        logBox.textContent += `[${new Date().toLocaleTimeString()}] ✅ Reconnected to agent!\n`;
+        logBox.textContent += `[${new Date().toLocaleTimeString()}] Reconnected to agent!\n`;
         logBox.scrollTop = logBox.scrollHeight;
         await saveLogState(logBox.textContent, true);
     };
@@ -130,7 +129,7 @@ function reconnectToAgent() {
 
         if (event.data.includes("completed") || event.data.includes("finished")) {
             submitBtn.classList.remove('loading');
-            submitBtn.textContent = '🚀 Start Agent';
+            submitBtn.textContent = 'Start Agent';
             submitBtn.dataset.mode = 'start';
             await saveLogState(logBox.textContent, false);
             activeEventSource.close();
@@ -139,9 +138,9 @@ function reconnectToAgent() {
     };
 
     activeEventSource.onerror = async () => {
-        logBox.textContent += `[${new Date().toLocaleTimeString()}] ❌ Failed to reconnect - agent may have stopped\n`;
+        logBox.textContent += `[${new Date().toLocaleTimeString()}] Failed to reconnect - agent may have stopped\n`;
         submitBtn.classList.remove('loading');
-        submitBtn.textContent = '🚀 Start Agent';
+        submitBtn.textContent = 'Start Agent';
         submitBtn.dataset.mode = 'start';
         await saveLogState(logBox.textContent, false);
         activeEventSource.close();
