@@ -126,7 +126,6 @@ async def apply_jobs_with_integrated_gemini(navigator, elements_info, job_list_u
             
             if analysis_result:
                 print("\n✅ Form analysis completed successfully")
-                
                 print("\n🤖 Starting automated form filling and submission...")
                 
                 completion_success = await form_value_filler.complete_form_process(answers)

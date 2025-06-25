@@ -7,3 +7,4 @@ class UserProfile(BaseModel):
     preferred_location: str
     work_authorization: str
     relocation_willingness: str
+    resume_uploaded: bool = False

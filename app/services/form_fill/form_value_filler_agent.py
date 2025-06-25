@@ -277,10 +277,6 @@ class FormValueFillerAgent:
             return 'error'
     
     async def complete_form_process(self, initial_answers):
-        """
-        Complete the entire form filling and submission process
-        Handles multiple pages/steps if Next buttons are present
-        """
         print("\n🚀 Starting complete form process...")
         
         current_answers = initial_answers
@@ -288,36 +284,32 @@ class FormValueFillerAgent:
         
         while True:
             print(f"\n📋 Processing form step {step_count}...")
-            
-            # Fill current form values
+            await asyncio.sleep(0)  # yield for logs to flush
+
             success, remaining_fields = await self.fill_form_values(current_answers)
-            
+
             if not success:
                 print("❌ Form filling failed")
                 return False
-            
-            # Wait a moment for fields to be processed
+
             await asyncio.sleep(2)
-            
-            # Handle form submission
+
             submission_result = await self.handle_form_submission()
-            
+            await asyncio.sleep(0)  # yield again
+
             if submission_result == 'next':
                 print("➡️ Next button clicked - extracting questions for next step...")
-                
-                print("\n \n")
-                
+                await asyncio.sleep(0)
+
                 form_agent = FormFillAgent(self.navigator, self.llm_model)
-                
                 page_state = await form_agent.get_current_page_state()
                 questions = await form_agent.extract_questions_only(page_state)
+                await asyncio.sleep(0)  # yield after heavy operations
 
                 if questions:
                     print("\n" + "="*60)
                     print("📋 EXTRACTED QUESTIONS:")
                     print("="*60)
-                    
-                    # Print the extracted questions first
                     for i, q in enumerate(questions, 1):
                         print(f"{i}. Question: {q.get('question', 'Unknown')}")
                         print(f"   Element ID: {q.get('element_id', 'Unknown')}")
@@ -325,46 +317,43 @@ class FormValueFillerAgent:
                         if q.get('options'):
                             print(f"   Options: {q.get('options')}")
                         print("-" * 40)
-                    
                     print("="*60)
-                    
+                    await asyncio.sleep(0)
+
                     result = "questions_extracted"
+                else:
+                    print("❌ Failed to extract questions for next step")
+                    return False
 
                 if result == "questions_extracted":
                     questions = form_agent.last_extracted_questions
                     print(f"📝 Extracted {len(questions)} questions for next step")
-                    
+                    await asyncio.sleep(0)
+
                     user_profile = load_user_profile()
                     form_filler = FormFillSubAgent(self.navigator, self.llm_model, self.resume_path, user_profile)
                     answers, analysis_result = await form_filler.answer_and_fill(questions)
-                    
+                    await asyncio.sleep(0)
+
                     current_answers = answers
                     step_count += 1
-                    
-                    # Continue to next iteration of the loop
                     continue
-                else:
-                    print("❌ Failed to extract questions for next step")
-                    return False
-                    
+
             elif submission_result == 'review':
                 print("👀 Review button clicked - proceeding to final submission...")
                 await asyncio.sleep(2)
-                
-                # Try to submit after review
                 final_submission = await self.handle_form_submission()
-                
                 if final_submission == 'submit':
                     print("✅ Application submitted successfully!")
                     return True
                 else:
                     print("❌ Failed to submit after review")
                     return False
-                    
+
             elif submission_result == 'submit':
                 print("✅ Application submitted successfully!")
                 return True
-                
+
             else:
                 print(f"❌ Form submission failed: {submission_result}")
                 return False

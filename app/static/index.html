@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Apply Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 100vw;
+            width: 100%;
+            margin: 0;
+            background: white;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: calc(100vh - 140px);
+        }
+
+        .left-panel {
+            padding: 40px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+        }
+
+        .right-panel {
+            padding: 40px;
+            background: #fff;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .form-caption {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .status {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            text-align: center;
+            display: none;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .logs-container {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            height: calc(100vh - 350px);
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #00ff00;
+            border: 2px solid #333;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .log-entry.info {
+            color: #00ff00;
+        }
+
+        .log-entry.warning {
+            color: #ffaa00;
+            background: rgba(255, 170, 0, 0.1);
+        }
+
+        .log-entry.error {
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+        }
+
+        .log-entry.success {
+            color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .log-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .log-controls button {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ccc;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: #00ff00;
+        }
+
+        .status-dot.disconnected {
+            background: #ff4444;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Job Apply Agent</h1>
+            <p>Automated LinkedIn Job Application Assistant</p>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <h2 class="section-title">👤 User Profile</h2>
+                <form id="profileForm" >
+                    <div class="form-group">
+                        <label for="notice_period">Notice Period *</label>
+                        <select id="notice_period" name="notice_period" required>
+                            <option value="">Select Notice Period</option>
+                            <option value="Immediate">Immediate</option>
+                            <option value="15 days">15 days</option>
+                            <option value="30 days">30 days</option>
+                            <option value="60 days">60 days</option>
+                            <option value="90 days">90 days</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="current_ctc">Current CTC *</label>
+                            <input type="text" id="current_ctc" name="current_ctc" placeholder="e.g., 4.8 LPA" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="expected_ctc">Expected CTC *</label>
+                            <input type="text" id="expected_ctc" name="expected_ctc" placeholder="e.g., 8 LPA" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="preferred_location">Preferred Location *</label>
+                        <input type="text" id="preferred_location" name="preferred_location" placeholder="e.g., Bangalore, Mumbai, Anywhere" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="work_authorization">Work Authorization in India *</label>
+                            <select id="work_authorization" name="work_authorization" required>
+                                <option value="">Select Authorization</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="relocation_willingness">Willing to Relocate *</label>
+                            <select id="relocation_willingness" name="relocation_willingness" required>
+                                <option value="">Select Option</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="resume_uploaded" name="resume_uploaded">
+                            <span class="checkmark"></span>
+                            Resume Already Uploaded to LinkedIn
+                        </label>
+                        <p class="form-caption">💡 If you're a first-time user, please untick this option</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+                        💾 Save Profile
+                    </button>
+                </form>
+
+                <div class="status" id="profileStatus"></div>
+
+                <div class="controls">
+                    <button class="btn btn-success" id="startAgentBtn">
+                        ▶️ Start Agent
+                    </button>
+                    <button class="btn btn-warning" id="continueAgentBtn">
+                        ⏯️ Continue Agent
+                    </button>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="log-controls">
+                    <h2 class="section-title">📋 Agent Logs</h2>
+                    <div>
+                        <button class="btn btn-primary" id="clearLogsBtn">🗑️ Clear</button>
+                        <div class="connection-status">
+                            <div class="status-dot" id="connectionDot"></div>
+                            <span id="connectionText">Disconnected</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="logs-container" id="logsContainer">
+                    <div class="log-entry info">🤖 Job Apply Agent UI Ready</div>
+                    <div class="log-entry info">💡 Fill out your profile and click "Start Agent" to begin</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = 'http://127.0.0.1:2000'; // Update this to your API URL
+        
+        // DOM Elements
+        const profileForm = document.getElementById('profileForm');
+        const profileStatus = document.getElementById('profileStatus');
+        const startAgentBtn = document.getElementById('startAgentBtn');
+        const continueAgentBtn = document.getElementById('continueAgentBtn');
+        const clearLogsBtn = document.getElementById('clearLogsBtn');
+        const logsContainer = document.getElementById('logsContainer');
+        const connectionDot = document.getElementById('connectionDot');
+        const connectionText = document.getElementById('connectionText');
+
+        // State
+        let eventSource = null;
+        let isAgentRunning = false;
+
+        // Utility Functions
+        function showStatus(message, type = 'success') {
+            profileStatus.textContent = message;
+            profileStatus.className = `status ${type}`;
+            profileStatus.style.display = 'block';
+            setTimeout(() => {
+                profileStatus.style.display = 'none';
+            }, 3000);
+        }
+
+        function addLog(message, type = 'info') {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+
+        function updateConnectionStatus(connected) {
+            connectionDot.className = `status-dot ${connected ? 'connected' : 'disconnected'}`;
+            connectionText.textContent = connected ? 'Connected' : 'Disconnected';
+        }
+
+        function getLogType(message) {
+            const lowerMessage = message.toLowerCase();
+            if (lowerMessage.includes('error') || lowerMessage.includes('exception') || lowerMessage.includes('❌')) {
+                return 'error';
+            } else if (lowerMessage.includes('warning') || lowerMessage.includes('⚠️')) {
+                return 'warning';
+            } else if (lowerMessage.includes('success') || lowerMessage.includes('✅') || lowerMessage.includes('finished')) {
+                return 'success';
+            }
+            return 'info';
+        }
+
+        // API Functions
+        async function saveProfile(profileData) {
+            try {
+                
+                const response = await fetch(`${API_BASE_URL}/agent/set-profile`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                throw error;
+            }
+        }
+
+        async function startAgent() {
+            try {
+                // Close existing EventSource if any
+                if (eventSource) {
+                    eventSource.close();
+                }
+
+                // Create new EventSource for streaming logs
+                eventSource = new EventSource(`${API_BASE_URL}/agent/start-agent`);
+                
+                eventSource.onopen = () => {
+                    updateConnectionStatus(true);
+                    addLog('🔗 Connected to agent stream', 'success');
+                    isAgentRunning = true;
+                    updateButtonStates();
+                };
+
+                eventSource.onmessage = (event) => {
+                    if (event.data && event.data.trim()) {
+                        const logType = getLogType(event.data);
+                        addLog(event.data, logType);
+                    }
+                };
+
+                eventSource.onerror = (error) => {
+                    console.error('EventSource error:', error);
+                    updateConnectionStatus(false);
+                    addLog('❌ Connection error or agent stopped', 'error');
+                    isAgentRunning = false;
+                    updateButtonStates();
+                };
+
+                addLog('🚀 Starting agent...', 'info');
+
+            } catch (error) {
+                console.error('Error starting agent:', error);
+                addLog(`❌ Error starting agent: ${error.message}`, 'error');
+                updateConnectionStatus(false);
+                isAgentRunning = false;
+                updateButtonStates();
+            }
+        }
+
+        async function continueAgent() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/agent/continue-agent`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                addLog('⏯️ Continue signal sent to agent', 'success');
+                
+            } catch (error) {
+                console.error('Error continuing agent:', error);
+                addLog(`❌ Error continuing agent: ${error.message}`, 'error');
+            }
+        }
+
+        function updateButtonStates() {
+            startAgentBtn.disabled = isAgentRunning;
+            continueAgentBtn.disabled = !isAgentRunning;
+        }
+
+        // Event Listeners
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(profileForm);
+            const profileData = {
+                notice_period: formData.get('notice_period'),
+                current_ctc: formData.get('current_ctc'),
+                expected_ctc: formData.get('expected_ctc'),
+                preferred_location: formData.get('preferred_location'),
+                work_authorization: formData.get('work_authorization'),
+                relocation_willingness: formData.get('relocation_willingness'),
+                resume_uploaded: formData.get('resume_uploaded') === 'on'
+            };
+
+            try {
+                await saveProfile(profileData);
+                showStatus('✅ Profile saved successfully!', 'success');
+                addLog('💾 Profile saved successfully', 'success');
+            } catch (error) {
+                showStatus('❌ Error saving profile', 'error');
+                addLog(`❌ Error saving profile: ${error.message}`, 'error');
+            }
+        });
+
+        startAgentBtn.addEventListener('click', startAgent);
+        continueAgentBtn.addEventListener('click', continueAgent);
+
+        clearLogsBtn.addEventListener('click', () => {
+            logsContainer.innerHTML = '<div class="log-entry info">🗑️ Logs cleared</div>';
+        });
+
+        // Initialize UI
+        updateButtonStates();
+        updateConnectionStatus(false);
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (eventSource) {
+                eventSource.close();
+            }
+        });
+    </script>
+</body>
+</html>

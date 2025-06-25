@@ -9,11 +9,13 @@ import sys
 from core.config import Temp_Path
 
 router = APIRouter()
-print_buffer = []
+print_queue = asyncio.Queue()
+
 
 # ──────────────── 🔁 Save Profile ────────────────
 @router.post("/set-profile")
 async def set_profile(profile: UserProfile):
+    print("Set Profile Called =====================")
     with open(User_Profile_path, "w") as f:
         json.dump(profile.dict(), f, indent=2)
     return {"status": "success", "msg": "Profile saved"}
@@ -21,8 +23,9 @@ async def set_profile(profile: UserProfile):
 # ──────────────── 📤 Print Interceptor ────────────────
 class PrintInterceptor:
     def write(self, message):
-        if message.strip():
-            print_buffer.append(message.strip())
+        message = message.strip()
+        if message:
+            asyncio.create_task(print_queue.put(message))
     def flush(self):
         pass
 
@@ -63,8 +66,14 @@ async def start_agent():
 
     async def stream_logs():
         while True:
-            if print_buffer:
-                yield f"data: {print_buffer.pop(0)}\n\n"
-            await asyncio.sleep(0.5)
-
+            try:
+                try:
+                    message = await asyncio.wait_for(print_queue.get(), timeout=10.0)
+                    yield f"data: {message}\n\n"
+                except asyncio.TimeoutError:
+                    # Send keep-alive comment to prevent SSE timeout
+                    yield ": keep-alive\n\n"
+            except asyncio.CancelledError:
+                break
+            
     return EventSourceResponse(stream_logs())

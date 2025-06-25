@@ -26,9 +26,7 @@ async def ask_llm_for_action_with_tools(navigator_instance, elements_info, goal,
         return await navigator_instance.execute_fallback_action(elements_info, current_step)
 
     try:
-        if current_step == "initial":
-            return await ask_login_agent(navigator_instance, elements_info, goal, current_step)
-        elif current_step == "homepage":
+        if current_step == "homepage":
             url = TARGET_JOB_URL
             return await navigate_to_Jobs(navigator_instance, elements_info, goal, current_step, url)
         elif current_step == "Applying_Jobs":
@@ -41,19 +39,6 @@ async def ask_llm_for_action_with_tools(navigator_instance, elements_info, goal,
         print(f"❌ Sub-agent error: {e}")
         return "⚠️ No fallback action defined. Skipping this step or retrying later."
 
-
-async def ask_login_agent(navigator, elements_info, goal, step):
-    return await _invoke_llm_tool_use(
-        navigator, elements_info, goal, step,
-        agent_role="LoginAgent",
-        extra_instruction="""
-        First CLick Sign IN Button to navigate to Login Page and then follow next steps
-        1. Fill email input field first.
-        2. Then fill password.
-        3. Finally, click the "Sign in" button.
-        4. Never click 'Continue with Google' or similar.
-        """
-    )
 
 async def navigate_to_Jobs(navigator, elements_info, goal, step, url):
     return await _invoke_llm_tool_use(

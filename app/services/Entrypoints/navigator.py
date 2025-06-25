@@ -34,7 +34,7 @@ class LinkedInJobsNavigator:
     async def setup_browser(self):
         """Initialize Playwright browser"""
         self.playwright = await async_playwright().start()
-        self.browser = await self.playwright.chromium.launch(headless=False, slow_mo=1000)
+        self.browser = await self.playwright.firefox.launch(headless=False, slow_mo=1000)
         self.context = await self.browser.new_context()
         self.page = await self.context.new_page()   
         
@@ -244,7 +244,7 @@ class LinkedInJobsNavigator:
         print("="*80)
         
         # input("\nPress ENTER after completing verification manually...")
-        await wait_for_user_resume("resume upload")
+        await wait_for_user_resume("Security Verification Detected")
         
         print("\nContinuing automation...")
         self.human_intervention_needed = False
@@ -323,7 +323,8 @@ class LinkedInJobsNavigator:
                     
                     goal = (
                         "Navigate LinkedIn from the homepage to the Jobs section. "
-                        "First, sign in using the provided email and password by filling the login form. "
+                        "First click Sign In button to navigate into log in page"
+                        "Second, using the provided email and password fill the login form and click Sign IN. "
                         "After successful login, directly navigate to the JOB URL to view filtered job results: "
                         "Wait for the job search results to fully load. "
                         "Once the page is loaded, proceed to the next step: start applying to jobs. "
